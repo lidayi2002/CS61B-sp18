@@ -117,8 +117,9 @@ public class ArrayDeque<T> {
                 value = items[nextFirst + 1];
                 nextFirst += 1;
             }
-            resize();
             size -= 1;
+            resize();
+
             return value;
         }
 
@@ -136,8 +137,9 @@ public class ArrayDeque<T> {
                 value = items[nextLast - 1];
                 nextLast = nextLast - 1;
             }
-            resize();
             size -= 1;
+            resize();
+
             return value;
         }
 
