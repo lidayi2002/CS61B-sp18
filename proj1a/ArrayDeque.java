@@ -3,6 +3,7 @@ public class ArrayDeque<T> {
     private int nextFirst;
     private int nextLast;
     private T[] items;
+
     private int size;
 
     public ArrayDeque() {
@@ -87,11 +88,14 @@ public class ArrayDeque<T> {
     }
     /** check if array needs to be resized. if true do it. */
     private void resize() {
-        if (size < items.length / 4 && items.length >= 16) {
+        if (size < items.length / 4.0 && items.length >= 16) {
             T[] a = (T[]) new Object[items.length / 2];
             System.arraycopy(items, nextFirst + 1, a, 0, items.length - nextFirst - 1);
             System.arraycopy(items, 0, a, items.length - nextFirst - 1, nextFirst + 1);
             items = a;
+            nextFirst = items.length - 1;
+            nextLast = items.length / 2;
+
         }
     }
 
@@ -137,10 +141,13 @@ public class ArrayDeque<T> {
         if (index >= size) {
             return null;
         }
-        if (nextFirst + index + 1 < items.length - 1) {
-            return items[nextFirst + index + 1];
+        if (nextFirst == items.length - 1) {
+            return items[index];
+        } else if (nextFirst + 1 + index > items.length - 1) {
+            return items[index - (items.length - nextFirst - 1)];
+
         }
-        return items[index - (items.length - nextFirst - 1)];
+        return items[nextFirst + 1 + index];
 
     }
 
