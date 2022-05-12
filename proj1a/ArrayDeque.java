@@ -90,12 +90,18 @@ public class ArrayDeque<T> {
     private void resize() {
         if (size < items.length / 4.0 && items.length >= 16) {
             T[] a = (T[]) new Object[items.length / 2];
-            System.arraycopy(items, nextFirst + 1, a, 0, items.length - nextFirst - 1);
-            System.arraycopy(items, 0, a, items.length - nextFirst - 1, nextFirst + 1);
+            if (size > items.length - nextFirst - 1) {
+                System.arraycopy(items, nextFirst + 1, a, 0, items.length - nextFirst - 1);
+                System.arraycopy(items, 0, a, items.length - nextFirst - 1,
+                        size - items.length + 1 + nextFirst);
+
+            } else {
+                System.arraycopy(items, nextFirst + 1, a, 0, size);
+
+            }
             items = a;
             nextFirst = items.length - 1;
             nextLast = items.length / 2;
-
         }
     }
 
