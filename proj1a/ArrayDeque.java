@@ -57,8 +57,8 @@ public class ArrayDeque<T> {
 
     }
     /** check if array needs to be resized. if true do it. */
-    public void resize() {
-        if ((frontSize + backSize) < items.length / 4.0) {
+    private void resize() {
+        if ((frontSize + backSize) < items.length / 4.0 && items.length >= 16) {
             T[] a = (T[]) new Object[items.length / 2];
             System.arraycopy(items, items.length / 4, a, 0, items.length / 2);
             items = a;
@@ -74,7 +74,7 @@ public class ArrayDeque<T> {
     }
 
     public T removeLast() {
-        T value = items[items.length + backSize];
+        T value = items[items.length / 2 + backSize - 1];
         backSize -= 1;
         resize();
         return value;
