@@ -1,162 +1,171 @@
-
+/** second part of project1A.
+ * deque implemented by array
+ * @author FlyingPig
+ */
 public class ArrayDeque<T> {
-    private int nextFirst;
-    private int nextLast;
-    private T[] items;
 
+    /** array to save data.*/
+    private T[] array;
+    /** size of the deque. */
     private int size;
 
+    /** size of the array. */
+    private int length;
+
+    /** front index. */
+    private int front;
+
+    /** last index. */
+    private int last;
+
+    /** constructor for ArrayDeque. */
     public ArrayDeque() {
-        items = (T[]) new Object[8];
-        nextFirst = 3;
-        nextLast = 4;
+        array = (T[]) new Object[8];
         size = 0;
-
-    }
-    /** in order to save time I decided to start my Array in the middle.
-     *  hope it works.
-     *  it seems the rate of usage 0.25 was prepared for this means.
-     *  it's wrong. the implement will not use above means*/
-
-
-    public void addFirst(T item) {
-        if (size == items.length) {
-            T[] a = (T[]) new Object[items.length * 2];
-
-            System.arraycopy(items, nextFirst + 1, a, 0, items.length - nextFirst - 1);
-            System.arraycopy(items, 0, a, items.length - nextFirst - 1, nextFirst + 1);
-            items = a;
-            items[items.length - 1] = item;
-            nextFirst = items.length - 2;
-            nextLast = items.length / 2;
-        } else if (nextFirst == 0) {
-            items[nextFirst] = item;
-            nextFirst = items.length - 1;
-        } else {
-            items[nextFirst] = item;
-            nextFirst -= 1;
-        }
-        size += 1;
-
+        length = 8;
+        front = 4;
+        last = 4;
     }
 
-
-    public void addLast(T item) {
-        if (size == items.length) {
-            T[] a = (T[]) new Object[items.length * 2];
-
-            System.arraycopy(items, nextFirst + 1, a, 0, items.length - nextFirst - 1);
-            System.arraycopy(items, 0, a, items.length - nextFirst - 1, nextFirst + 1);
-            items = a;
-            items[items.length / 2] = item;
-            nextFirst = items.length - 1;
-            nextLast = items.length / 2 + 1;
-        } else if (nextLast == items.length - 1) {
-            items[nextLast] = item;
-            nextLast = 0;
-        } else {
-            items[nextLast] = item;
-            nextLast += 1;
-        }
-        size += 1;
-
-    }
-
+    /** decide if the deque is empty.
+     * @return true if the deque is empty, vice versa.
+     */
     public boolean isEmpty() {
         return size == 0;
-
     }
 
+    /** return the size of the deque. */
     public int size() {
         return size;
-
     }
 
-    public void printDeque() {
-        if (nextFirst < nextLast) {
-            for (int i = nextFirst + 1; i < nextLast; i++) {
-                System.out.print(items[i] + " ");
-            }
-        } else {
-            for (int i = nextFirst + 1; i < items.length; i++) {
-                System.out.print(items[items.length - nextFirst + i] + " ");
-            }
-            for (int i = 0; i < nextLast; i++) {
-                System.out.print(items[i] + " ");
-            }
+    /** return the "index - 1".
+     * @param index index
+     */
+    private int minusOne(int index) {
+        if (index == 0) {
+            return length - 1;
         }
+        return index - 1;
     }
-    /** check if array needs to be resized. if true do it. */
-    private void resize() {
-        if (size < items.length / 4.0 && items.length >= 16) {
-            T[] a = (T[]) new Object[items.length / 2];
-            if (size > items.length - nextFirst - 1) {
-                System.arraycopy(items, nextFirst + 1, a, 0, items.length - nextFirst - 1);
-                System.arraycopy(items, 0, a, items.length - nextFirst - 1,
-                        size - items.length + 1 + nextFirst);
 
-            } else {
-                System.arraycopy(items, nextFirst + 1, a, 0, size);
-
-            }
-            items = a;
-            nextFirst = items.length - 1;
-            nextLast = items.length / 2;
+    /** return the "index + 1".
+     * @param index index
+     */
+    private int plusOne(int index, int module) {
+        index %= module;
+        if (index == module - 1) {
+            return 0;
         }
+        return index + 1;
     }
 
+    private void grow() {
+        T[] newArray = (T[]) new Object[length * 2];
+        int ptr1 = front;
+        int ptr2 = length;
+        while (ptr1 != last) {
+            newArray[ptr2] = array[ptr1];
+            ptr1 = plusOne(ptr1, length);
+            ptr2 = plusOne(ptr2, length * 2);
+        }
+        front = length;
+        last = ptr2;
+        array = newArray;
+        length *= 2;
+    }
+
+    private void shrink() {
+        T[] newArray = (T[]) new Object[length / 2];
+        int ptr1 = front;
+        int ptr2 = length / 4;
+        while (ptr1 != last) {
+            newArray[ptr2] = array[ptr1];
+            ptr1 = plusOne(ptr1, length);
+            ptr2 = plusOne(ptr2, length / 2);
+        }
+        front = length / 4;
+        last = ptr2;
+        array = newArray;
+        length /= 2;
+    }
+
+    /** add one item at the front of the deque.
+     * @param item the item we want to add
+     */
+    public void addFirst(T item) {
+        if (size == length - 1) {
+            grow();
+        }
+        front = minusOne(front);
+        array[front] = item;
+        size++;
+    }
+
+    /** add one item at the end of the deque.
+     * @param item item we want to add
+     */
+    public void addLast(T item) {
+        if (size == length - 1) {
+            grow();
+        }
+        array[last] = item;
+        last = plusOne(last, length);
+        size++;
+    }
+
+    /** remove the first item.
+     * @return the removed first item
+     */
     public T removeFirst() {
-        if (isEmpty()) {
-            return null;
-        } else {
-            T value;
-            if (nextFirst == items.length - 1) {
-                value = items[0];
-                nextFirst = 0;
-            } else {
-                value = items[nextFirst + 1];
-                nextFirst += 1;
-            }
-            size -= 1;
-            resize();
-
-            return value;
+        if (length >= 16 && length / size >= 4) {
+            shrink();
         }
-
+        if (size == 0) {
+            return null;
+        }
+        T ret = array[front];
+        front = plusOne(front, length);
+        size--;
+        return ret;
     }
 
+    /** remove the last item.
+     * @return the removed last item
+     */
     public T removeLast() {
-        if (isEmpty()) {
-            return null;
-        } else {
-            T value;
-            if (nextLast == 0) {
-                value = items[items.length - 1];
-                nextLast = items.length - 1;
-            } else {
-                value = items[nextLast - 1];
-                nextLast = nextLast - 1;
-            }
-            size -= 1;
-            resize();
-
-            return value;
+        if (length >= 16 && length / size >= 4) {
+            shrink();
         }
-
+        if (size == 0) {
+            return null;
+        }
+        last = minusOne(last);
+        size--;
+        return array[last];
     }
 
+    /** return the item indexed at index.
+     * @param index index
+     */
     public T get(int index) {
         if (index >= size) {
             return null;
         }
-        if (nextFirst == items.length - 1) {
-            return items[index];
-        } else if (nextFirst + 1 + index > items.length - 1) {
-            return items[index - (items.length - nextFirst - 1)];
-
+        int ptr = front;
+        for (int i = 0; i < index; i++) {
+            ptr = plusOne(ptr, length);
         }
-        return items[nextFirst + 1 + index];
+        return array[ptr];
+    }
 
+    /** print the entire deque from front to end. */
+    public void printDeque() {
+        int ptr = front;
+        while (ptr != last) {
+            System.out.print(array[ptr] + " ");
+            ptr = plusOne(ptr, length);
+        }
     }
 
 }
