@@ -66,6 +66,15 @@ public class ArrayDeque<T> {
     }
 
     public T removeFirst() {
+        if (isEmpty()) {
+            return null;
+        } else if (size() == 1) {
+            T value = items[items.length / 2 - frontSize];
+            frontSize = 0;
+            backSize = 0;
+            resize();
+            return value;
+        }
         T value = items[items.length / 2 - frontSize];
         frontSize -= 1;
         resize();
@@ -74,6 +83,15 @@ public class ArrayDeque<T> {
     }
 
     public T removeLast() {
+        if (isEmpty()) {
+            return null;
+        } else if (size() == 1) {
+            T value = items[items.length / 2 + backSize - 1];
+            resize();
+            backSize = 0;
+            frontSize = 0;
+            return value;
+        }
         T value = items[items.length / 2 + backSize - 1];
         backSize -= 1;
         resize();
