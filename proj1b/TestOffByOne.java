@@ -6,16 +6,17 @@ public class TestOffByOne {
     // You must use this CharacterComparator and not instantiate
     // new ones, or the autograder might be upset.
     static CharacterComparator offByOne = new OffByOne();
-    static Palindrome palindrome = new Palindrome();
+
     @Test
     public void testIsPalindromeByOne() {
-        assertFalse(palindrome.isPalindrome("Aaaaa", offByOne));
-        assertTrue(palindrome.isPalindrome("aacbb", offByOne));
-        assertTrue(palindrome.isPalindrome("aaaabbbb", offByOne));
-        assertTrue(palindrome.isPalindrome("", offByOne));
-        assertTrue(palindrome.isPalindrome("a", offByOne));
-        assertTrue(palindrome.isPalindrome("&%", offByOne));
-        assertFalse(palindrome.isPalindrome("abbbba", offByOne));
+        assertTrue(offByOne.equalChars('a', 'b'));
+        assertTrue(offByOne.equalChars('r', 'q'));
+        assertTrue(offByOne.equalChars('&', '%'));
+
+        assertFalse(offByOne.equalChars('a', 'a'));
+        assertFalse(offByOne.equalChars('a', 'z'));
+        assertFalse(offByOne.equalChars('a', 'e'));
+        assertFalse(offByOne.equalChars('a', 'A'));
     }
     // Your tests go here.
 
