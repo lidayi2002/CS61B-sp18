@@ -30,6 +30,8 @@ public class TestPalindrome {
         assertFalse(palindrome.isPalindrome("Aaaaa"));
         assertTrue(palindrome.isPalindrome("AaA"));
     }
+
+    @Test
     public void testIsOffByOne() {
         assertFalse(palindrome.isPalindrome("AaaAB", offByOne));
         assertTrue(palindrome.isPalindrome("aacbb", offByOne));
