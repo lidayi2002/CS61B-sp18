@@ -3,6 +3,7 @@ package hw2;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
+
     private final boolean[][] grid;
 
     private final int[] adRow = {-1, 0, 0, 1};
@@ -58,13 +59,14 @@ public class Percolation {
         if (!isOpen(row, col)) {
             grid[row][col] = true;
             openSite++;
+            openSite(row, col);
             if (row == 0) {
                 id.union(0, calPosition(row, col));
             }
-            if (row == width - 1) {
+            if (row == width - 1  && isFull(row, col)) {
                 id.union(1, calPosition(row, col));
             }
-            openSite(row, col);
+
         }
 
     }
@@ -88,6 +90,7 @@ public class Percolation {
         return id.connected(0, 1);
     }          // does the system percolate?
     public static void main(String[] args) {
+        Percolation trial = new Percolation(3);
 
     }   // use for unit testing (not required)
 }
