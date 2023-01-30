@@ -4,7 +4,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     private final byte[] status = {0, 1, 2, 3};
-    private final boolean[][] Open;
+    private final boolean[][] open;
 
     private final byte[] gridStatus;
     private boolean percolation;
@@ -23,14 +23,14 @@ public class Percolation {
             throw new IllegalArgumentException("N should be positive.");
         }
         width = N;
-        Open = new boolean[width][width];
+        open = new boolean[width][width];
         gridStatus = new byte[width * width];
         for (int i = 0; i < width * width; i++) {
             gridStatus[i] = status[0];
         }
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < width; j++) {
-                Open[i][j] = false;
+                open[i][j] = false;
             }
         }
 
@@ -54,7 +54,8 @@ public class Percolation {
             if (0 <= newRow && newRow < width && 0 <= newCol
                     && newCol < width && isOpen(newRow, newCol)) {
 
-                byte tmp = (byte) (gridStatus[id.find(calPosition(row, col))] | gridStatus[id.find(calPosition(newRow, newCol))]);
+                byte tmp = (byte) (gridStatus[id.find(calPosition(row, col))]
+                        | gridStatus[id.find(calPosition(newRow, newCol))]);
                 id.union(calPosition(row, col), calPosition(newRow, newCol));
                 gridStatus[id.find(calPosition(row, col))] = tmp;
 
@@ -75,9 +76,12 @@ public class Percolation {
 
         }
         if (!isOpen(row, col)) {
-            Open[row][col] = true;
+            open[row][col] = true;
             openSite++;
-
+            if (width == 1) {
+                gridStatus[0] = status[3];
+                return;
+            }
             if (row == 0) {
                 gridStatus[calPosition(row, col)] = status[2];
             }
@@ -95,11 +99,12 @@ public class Percolation {
             throw new IndexOutOfBoundsException("Please enter int between 0 and " + width + ".");
 
         }
-        return Open[row][col];
+        return open[row][col];
     }
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-        return gridStatus[id.find(calPosition(row, col))] == status[2] || gridStatus[id.find(calPosition(row, col))] == status[3];
+        return gridStatus[id.find(calPosition(row, col))] == status[2]
+                || gridStatus[id.find(calPosition(row, col))] == status[3];
     }
     public int numberOfOpenSites() {
         return openSite;
@@ -108,11 +113,7 @@ public class Percolation {
         return percolation;
     }          // does the system percolate?
     public static void main(String[] args) {
-        Percolation trial = new Percolation(3);
-        trial.open(0,2);
-        if(trial.isFull(0,2)) {
-            System.out.println("!");
-        }
+
 
 
     }   // use for unit testing (not required)
