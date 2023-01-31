@@ -80,6 +80,7 @@ public class Percolation {
             openSite++;
             if (width == 1) {
                 gridStatus[0] = status[3];
+                percolation = true;
                 return;
             }
             if (row == 0) {
