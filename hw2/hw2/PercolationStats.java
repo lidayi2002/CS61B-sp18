@@ -44,8 +44,6 @@ public class PercolationStats {
         return (mean() + 1.96 * stddev() / Math.sqrt(threshold.length));
     }
 
-    public static void main(String[] args) {
 
-    }
 }
 
